@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Freehand drawing</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<!--ATTN Max - below API is updated to OL5 -->
+	    <link rel="stylesheet" href="https://openlayers.org/en/v5.0.0/css/ol.css" type="text/css">
+	    <script src="https://openlayers.org/en/v5.0.0/build/ol.js" type="text/javascript"></script>
+	    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+	    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>	
+	    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+		<!-- Custom scripts -->
+		<script type="text/javascript" src="js/mapScript.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/styles.css">
+	</head>
+	<body onload="initialiseMap()">
+		<div id="map" class="map">
+		<!-- div for form/interface -->
+			<div id="interface">
+				<button id="showInstructions" title="Show instructions" class="btn btn-default" style="display: block; margin: auto; margin-bottom: 10px;">&#9432;</button>
+				<h5>Choose a data type</h5>					  			
+				<select id="dataSourceSelect" class='selectpicker' data-width='75%' data-style='btn-secondary'>
+					<option id="no_type_chosen">Select data type</option>
+					<option id="covariate_layer">Covariate layer</option>
+					<option id="population_density_layer">Population density</option>
+				</select>				
+				<h5>Select covariate</h5>
+				<select id="covariateSelect" class='selectpicker' data-width='75%' data-style='btn-secondary' disabled>
+					<option id="no_covariate_chosen">Select covariate</option>					
+					<option id="ccilc_dst011">ccilc_dst011</option>
+					<option id="ccilc_dst040">ccilc_dst040</option>
+					<option id="ccilc_dst130">ccilc_dst130</option>
+					<option id="ccilc_dst140">ccilc_dst140</option>
+					<option id="ccilc_dst150">ccilc_dst150</option>
+					<option id="ccilc_dst160">ccilc_dst160</option>
+					<option id="ccilc_dst190">ccilc_dst190</option>
+					<option id="ccilc_dst200">ccilc_dst200</option>
+					<option id="cciwat_dst">cciwat_dst</option>
+					<option id="ghsl_esa_dst">ghsl_esa_dst</option>
+					<option id="osmint_dst">osmint_dst</option>
+					<option id="osmriv_dst">osmriv_dst</option>
+					<option id="osmroa_dst">osmroa_dst</option>
+					<option id="wclim_prec">wclim_prec</option>
+					<option id="wclim_temp">wclim_temp</option>
+					<option id="slope">slope</option>
+					<option id="topo">topo</option>
+					<option id="gpw4coast_dst">gpw4coast_dst</option>
+					<option id="dmsp">dmsp</option>
+				</select>
+				<div id="AgeSexSelect">
+					<h5>Select sex</h5>
+					<select id="sexSelect" class='selectpicker' data-width='75%' data-style='btn-secondary' disabled>
+						<option id="no_sex_chosen">Select sex</option>
+						<option id="Male">Male</option>
+						<option id="Female">Female</option>
+						<option id="both_sexes">Both sexes</option>					
+					</select>
+					<h5>Select age group</h5>
+					<select id="ageSelect" class='selectpicker' data-width='75%' data-style='btn-secondary' disabled>
+						<option id="no_age_selected">Select age group</option>		
+						<option id="all_ages">All ages</option>			
+						<option id="0-4">0-4</option>
+						<option id="5-9">5-9</option>
+						<option id="10-14">10-14</option>
+						<option id="15-19">15-19</option>
+						<option id="20-24">20-24</option>
+						<option id="25-29">25-29</option>
+						<option id="30-34">30-34</option>
+						<option id="35-39">35-39</option>
+						<option id="40-44">40-44</option>
+						<option id="45-49">45-49</option>
+						<option id="50-54">50-54</option>
+						<option id="55-59">55-59</option>
+						<option id="60-64">60-64</option>
+						<option id="65-69">65-69</option>
+						<option id="70-74">70-74</option>
+						<option id="75-79">75-79</option>
+						<option id="80_plus">80 plus</option>
+					</select>	
+					<br>
+				</div>									
+				<h5>Select year</h5>					  			
+				<select id="yearSelect" class='selectpicker' data-dropup-auto='false' data-width='75%' data-style='btn-secondary'>
+					<option id="no_year_chosen"> Select year</option>
+					<option id="year_2000">2000</option>
+					<option id="year_2001">2001</option>
+					<option id="year_2002">2002</option>
+					<option id="year_2003">2003</option>
+					<option id="year_2004">2004</option>
+					<option id="year_2005">2005</option>
+					<option id="year_2006">2006</option>
+					<option id="year_2007">2007</option>
+					<option id="year_2008">2008</option>
+					<option id="year_2009">2009</option>
+					<option id="year_2010">2010</option>
+					<option id="year_2011">2011</option>
+					<option id="year_2012">2012</option>
+					<option id="year_2013">2013</option>
+					<option id="year_2014">2014</option>
+					<option id="year_2015">2015</option>
+					<option id="year_2016">2016</option>
+					<option id="year_2017">2017</option>
+					<option id="year_2018">2018</option>
+					<option id="year_2019">2019</option>
+					<option id="year_2020">2020</option>
+				</select>					
+	  		</div>			
+		</div>
+	</body>
+</html>

@@ -1,0 +1,48 @@
+
+html, body{
+	width: 100%;
+	position: relative;
+	background-color: white;
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+
+.map {
+	width: 100%;
+	height: 100%;
+	
+}
+
+.ol-attribution > ul {
+    font-size: 1.3rem;
+}
+
+
+#interface {
+    position: absolute;
+    right: 25px;
+    top: 8px;
+    z-index: 10000;
+    width: 260px;    
+    background-color:#FFFFFF;
+    opacity: 0.8;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 25px;
+
+}
+
+#showInstructions {
+	display: block;
+	font-size: 1.3em;
+}
+
+
+.selectpicker {
+	display: block;
+}
+
