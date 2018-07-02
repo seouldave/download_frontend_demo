@@ -32,19 +32,61 @@ function initialiseMap() {
 		})
 	});
 
-	/*Function to enable chosen data source*/
+	/*Function to enable chosen data source
+	* and create variable to be sent to server
+	*/
 	$(document).ready(function() {
 		$("#dataSourceSelect").on("change", function() {
 			var dataSource = $(this).find("option:selected").attr("id");
 			if (dataSource == "covariate_layer") {
-				/*MAKE COVARIATE menu active*/
-				$("#covariateSelect").prop('data-hide-disabled: true');
-				console.log($("#covariateSelect").prop())
+				$("#covariateSelect").prop('disabled', false);
+				$("#covariateSelect").selectpicker('refresh');
+				$("#sexSelect").prop('disabled', true);
+				$("#ageSelect").prop('disabled', true);
+				$("#sexSelect").val('Select sex');
+				$("#ageSelect").val('Select age group')
+				$("#sexSelect").selectpicker('refresh');
+				$("#ageSelect").selectpicker('refresh');
 			} else if (dataSource == "population_density_layer") {
 				$("#sexSelect").prop('disabled', false);
 				$("#ageSelect").prop('disabled', false);
-			}
+				$("#sexSelect").selectpicker('refresh');
+				$("#ageSelect").selectpicker('refresh');
+				$("#covariateSelect").prop('disabled', true);
+				$("#covariateSelect").val('Select covariate');
+				$("#covariateSelect").selectpicker('refresh');
+ 
+			};
 		});
 	});
+
+	$(document).ready(function() {
+		$(".nav-tabs a").click(function() {
+			$(this).tab('show');
+		});
+	});
+
+	var draw;
+	var typeSelect = document.getElementById('type');
+
+	function addInteraction() {
+		var value = typeSelect.value;
+		console.log(value);
+		/*var value = typeSelect;*/
+		if (value != 'None') {
+			draw = new ol.interaction.Draw({
+				source: source,
+				type: value
+			});
+			map.addInteraction(draw);
+		}
+	}
+
+	typeSelect.onchange = function() {
+		map.removeInteraction(draw);
+		addInteraction();
+	};
+
+	addInteraction();
 
 }

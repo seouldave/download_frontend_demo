@@ -108,7 +108,25 @@
 					<option id="year_2018">2018</option>
 					<option id="year_2019">2019</option>
 					<option id="year_2020">2020</option>
-				</select>					
+				</select>
+				<h5>Select method to add shape for analysis</h5>
+				<ul class="nav nav-tabs">
+					<li class="active" title="Draw shape on map by selecting drawing method below."><a href="#drawShape">Draw shape</a></li>
+					<li title="Upload ESRI Shapefile or GeoJSON file to add to map."><a href="#uploadShape">Upload file</a></li>
+				</ul>
+				<div class="tab-content">
+					<div id="drawShape" class="tab-pane fade in active">
+						<select id="type" class='selectpicker' data-width='75%' data-style='btn-secondary'>
+							<option value="None">Select shape</option>
+							<option value="Polygon">Polygon</option>
+							<option value="Circle">Circle</option>
+							<option value="Freehand">Freehand</option>
+						</select>
+					</div>
+					<div id="uploadShape" class="tab-pane fade in">
+						<h3>TEST2</h3>
+					</div>
+				</div>					
 	  		</div>			
 		</div>
 	</body>

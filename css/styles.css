@@ -44,5 +44,12 @@ html, body{
 
 .selectpicker {
 	display: block;
+	/*font-size: 0.5em;*/
 }
+.nav-tabs {
+	margin-bottom: 5px;
+	
+}
+
+
 
