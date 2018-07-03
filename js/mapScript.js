@@ -74,11 +74,20 @@ function initialiseMap() {
 		console.log(value);
 		/*var value = typeSelect;*/
 		if (value != 'None') {
+			if (value == 'Freehand') {
+				draw = new ol.interaction.Draw({
+					source: source,
+					type: 'Polygon',
+					freehand: true
+				});
+				map.addInteraction(draw);
+			} else {
 			draw = new ol.interaction.Draw({
 				source: source,
 				type: value
 			});
 			map.addInteraction(draw);
+			}
 		}
 	}
 
@@ -89,4 +98,83 @@ function initialiseMap() {
 
 	addInteraction();
 
+
+	/*
+	* Function to remove drawn layer ----------------> make sure this doesn't interfere with vector
+	*/
+	$(document).ready(function() {
+		$("#clearMap").on('click', function() {
+			vector.getSource().clear();
+		});
+	});
+
+
+	//Click submit button and send coords to server.
+	$("#submit").on('click', function() {
+		var features = vector.getSource().getFeatures();
+		var feature = features[0];
+		var coord = feature.getGeometry().getCoordinates();
+		console.log(coord);
+		var JSONQury = {};
+		var results = [];
+
+		for (var i = 0; i < coord[0].length - 1; i++) {
+			var c1 = ol.proj.transform(coord[0][i], 'EPSG:3857', 'EPSG:4326');
+
+			results.push({"lon": c1[0],
+						"lat": c1[1]
+					});
+		};
+		console.log(results);
+		$.ajax({
+			url: "http://10.19.101.223/wpgetdata/openlayer/get_raster.php",
+			type: "post",
+			data: {
+				JSONstringify: JSON.stringify(results)
+			},
+			beforeSend: function() {
+				//IS THIS NEEDED?
+				console.log(results);
+			},
+			success: function(data) {
+				try{
+					var json = $.parseJSON(data);
+					var status = json.status;
+					console.log("SUCCESS" + json);
+					switch (status)
+					{
+						case 1:
+						console.log("GOOD");
+						window.location = 'http://10.19.101.223/wpgetdata/openlayer/get_raster_file.php?JSONstringify=' + json.output;
+						console.log(json);
+						break;
+						case 2:
+						console.log("There was an error.1");
+						break
+						case 3:
+						console.log("There was an error.2");
+						break;
+						default:
+						console.log('There was an error.3');
+						break;
+					}
+				} catch(e) {
+					console.log(e);
+				}
+			},
+			error:function(){
+				console.log('There was an error.5');
+			}
+		});
+
+	});
+
 }
+
+/*TODO:
+* If input is circle, how can it be extracted on circle - find way to get centre and radius.
+* Calculate area of polygon
+* Add shapefile/geojson
+*
+*
+*/

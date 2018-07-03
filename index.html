@@ -109,6 +109,7 @@
 					<option id="year_2019">2019</option>
 					<option id="year_2020">2020</option>
 				</select>
+				<hr>
 				<h5>Select method to add shape for analysis</h5>
 				<ul class="nav nav-tabs">
 					<li class="active" title="Draw shape on map by selecting drawing method below."><a href="#drawShape">Draw shape</a></li>
@@ -116,16 +117,29 @@
 				</ul>
 				<div class="tab-content">
 					<div id="drawShape" class="tab-pane fade in active">
-						<select id="type" class='selectpicker' data-width='75%' data-style='btn-secondary'>
-							<option value="None">Select shape</option>
+						<h5>Select shape type to draw</h5>
+						<select id="type" class='selectpicker' data-width='35%' data-style='btn-secondary' style="float:left; margin-right: 5px; font-size: 0.5em;">
+							<option value="None">None</option>
 							<option value="Polygon">Polygon</option>
 							<option value="Circle">Circle</option>
 							<option value="Freehand">Freehand</option>
 						</select>
+						<button id="clearMap" class="btn btn-warning" title="Remove shape from map.">Clear</button>
 					</div>
 					<div id="uploadShape" class="tab-pane fade in">
-						<h3>TEST2</h3>
+						<h5>Upload .shp or .geojson file only</h5>
+						<button id="browse" class="btn btn-secondary" style="float:left; margin-right: 5px;">Browse</button>
+						<button id="clearMap" class="btn btn-warning" title="Remove shape from map.">Clear</button>
 					</div>
+				</div>
+				<hr>
+				<div id="submit-div">
+					<h5>Choose output type and submit</h5>
+					<div class="radio">
+						<label type="radio-inline"><input type="radio" name="optradio"><b>Raster</b></label>
+						<label type="radio-inline"><input type="radio" name="optradio"><b>Zonal statistics</b></label>
+					</div>
+					<button id="submit" class="btn btn-info">Submit</button>
 				</div>					
 	  		</div>			
 		</div>
