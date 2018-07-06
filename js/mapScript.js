@@ -126,6 +126,9 @@ function initialiseMap() {
 					});
 		};
 		console.log(results);
+
+
+
 		$.ajax({
 			url: "http://10.19.101.223/wpgetdata/openlayer/get_raster.php",
 			type: "post",
@@ -165,9 +168,25 @@ function initialiseMap() {
 			error:function(){
 				console.log('There was an error.5');
 			}
+
+
 		});
 
+
 	});
+
+
+		$(document).ready(function() {
+			$(document).ajaxStart(function() {
+				$("#wait").css("display", "inline-block");
+				$("#interface :input").prop("disabled", true);
+			});
+
+			$(document).ajaxStop(function() {
+				$("#wait").css("display", "none");
+				$("#interfac :input").attr("disabled", false);
+			});
+		});
 
 }
 

@@ -55,5 +55,10 @@ html, body{
 	margin-left: 5px;
 }
 
+#wait {
+	display: none;
+	padding-left: 5px;
+}
+
 
 
