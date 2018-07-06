@@ -127,8 +127,12 @@ function initialiseMap() {
 		};
 		console.log(results);
 
+		var outputRequest; //value for radio button -> write conditional to check what it is and call appropriate ajax funtion
+		getRaster(results);
 
+	});
 
+	function getRaster(results) {
 		$.ajax({
 			url: "http://10.19.101.223/wpgetdata/openlayer/get_raster.php",
 			type: "post",
@@ -168,25 +172,21 @@ function initialiseMap() {
 			error:function(){
 				console.log('There was an error.5');
 			}
+		});
+	};
 
 
+	$(document).ready(function() {
+		$(document).ajaxStart(function() {
+			$("#wait").css("display", "inline-block");
+			$("#interface :input").prop("disabled", true);
 		});
 
-
+		$(document).ajaxStop(function() {
+			$("#wait").css("display", "none");
+			$("#interfac :input").attr("disabled", false);
+		});
 	});
-
-
-		$(document).ready(function() {
-			$(document).ajaxStart(function() {
-				$("#wait").css("display", "inline-block");
-				$("#interface :input").prop("disabled", true);
-			});
-
-			$(document).ajaxStop(function() {
-				$("#wait").css("display", "none");
-				$("#interfac :input").attr("disabled", false);
-			});
-		});
 
 }
 
