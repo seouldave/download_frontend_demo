@@ -98,7 +98,8 @@ function initialiseMap() {
 
 	addInteraction();
 
-
+	//TESTING VARIABLE FOR JSON OUTPUT DATA
+	result_test = {"status":1,"message":null,"output":"\"\",\"mean\",\"min\",\"max\",\"sum\"\n\"1\",0.748299319727891,0,11,220\n"}
 	/*
 	* Function to remove drawn layer ----------------> make sure this doesn't interfere with vector
 	*/
@@ -127,8 +128,19 @@ function initialiseMap() {
 		};
 		console.log(results);
 
-		var outputRequest; //value for radio button -> write conditional to check what it is and call appropriate ajax funtion
-		getRaster(results);
+		var outputRequest = $("#outputSelect :checked").val(); //value for radio button -> write conditional to check what it is and call appropriate ajax funtion
+		if (outputRequest == "raster"){
+			getRaster(results);;
+		} else if (outputRequest == "zonalStats") {
+			//getZonalStats(results);
+			resultTestArray = result_test.output.split(',');
+			resultTestArray.unshift(1);
+			//alert(resultTestArray);
+			$("#resultsModal").modal();
+			/***************************START HERE TO INCLUDE THE LOGIC FOR THE TABLE********************************/
+		} else {
+			alert('Please select an output type (Raster or Zonal Statistics)');
+		}
 
 	});
 
@@ -173,6 +185,46 @@ function initialiseMap() {
 				console.log('There was an error.5');
 			}
 		});
+	};
+
+	function getZonalStats(results) {
+		 $.ajax({
+                url: "http://10.19.101.223/wpgetdata/openlayer/get.php",
+                type: "post",
+                data: {
+                    JSONstringify: JSON.stringify(results)
+                },
+                beforeSend: function(){
+                },                           
+                success: function(data){
+                    try{		
+                        var json = $.parseJSON(data);
+                        var status = json.status;
+                        switch (status)
+                        {
+                            case 1:
+								console.log('GOOD');
+								alert(json.output);
+								console.log(json.output);
+                                break;
+                            case 2:
+                                console.log('There was an error.1');
+                                break;
+                            case 3:
+                                console.log('There was an error.2');
+                                break;                                
+                            default:
+                                console.log('There was an error.3');
+                                break;
+                        }
+                    }catch(e) {	
+						console.log(e);
+                    }     
+                },
+                error:function(){
+                    console.log('There was an error.5');
+                }   
+            });
 	};
 
 

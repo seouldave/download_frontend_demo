@@ -136,13 +136,20 @@
 				<div id="submit-div">
 					<h5>Choose output type and submit</h5>
 					<div id="outputSelect" class="radio">
-						<label type="radio-inline"><input type="radio" name="optradio" id="raster"><b>Raster</b></label>
-						<label type="radio-inline"><input type="radio" name="optradio" id="zonal"><b>Zonal statistics</b></label>
+						<label type="radio-inline"><input type="radio" name="optradio" id="raster" value="raster"><b>Raster</b></label>
+						<label type="radio-inline"><input type="radio" name="optradio" id="zonal" value="zonalStats"><b>Zonal statistics</b></label>
 					</div>
 					<button id="submit" class="btn btn-info">Submit</button>
 					<div id="wait">
 						<img src="images/ajax-loader.gif" alt="Loading">
 						<p style="display: inline-block;">Please wait...</p>
+					</div>
+				</div>
+				<div id="resultsModal" class="modal">
+					<div class="modal-content">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h3>Zonal Statistics</h3>
+						<!-- **************************START HERE TO INCLUDE THE TABLE******************************* -->
 					</div>
 				</div>
 			</div>								
