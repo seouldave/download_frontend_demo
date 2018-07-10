@@ -98,8 +98,9 @@ function initialiseMap() {
 
 	addInteraction();
 
-	//TESTING VARIABLE FOR JSON OUTPUT DATA
-	result_test = {"status":1,"message":null,"output":"\"\",\"mean\",\"min\",\"max\",\"sum\"\n\"1\",0.748299319727891,0,11,220\n"}
+	//TESTING VARIABLE FOR JSON OUTPUT DATA --> DELETE AFTER TESTING
+	//result_test = {"status":1,"message":null,"output":"\"\",\"mean\",\"min\",\"max\",\"sum\"\n\"1\",0.748299319727891,0,11,220\n"}
+
 	/*
 	* Function to remove drawn layer ----------------> make sure this doesn't interfere with vector
 	*/
@@ -113,9 +114,27 @@ function initialiseMap() {
 	//Click submit button and send coords to server.
 	$("#submit").on('click', function() {
 		var features = vector.getSource().getFeatures();
-		var feature = features[0];
+		if (features.length == 0) {
+			alert("DRAW a picture");
+			return;
+		}
+		if (features.length > 1) {
+			var feature = features[features.length - 1];
+			for (var i=0; i < features.length -1; i++) {
+				vector.getSource().removeFeature(features[i]); //removes all features drawn except last one.
+			}
+		} else {
+			var feature = features[0]
+		};
+		if (feature.getGeometry().getArea() >= 100000000) {
+			area = feature.getGeometry().getArea();
+			//alert('Sorry, your polygon\'s area is too large. Your polygon is ' + area/1000 + '. Please draw a polygon 10 or less.');
+			$("#areaError").modal();
+			$("#areaErrorMessage").html("<p><b>Sorry, your polygon's area is too large. You polygon is " + (Math.round(area/1000000)) + "km<sup>2</sup>. Please draw a polygon 100km<sup>2</sup> or less");
+			return;
+		}
+		console.log(feature.getGeometry().getArea());
 		var coord = feature.getGeometry().getCoordinates();
-		console.log(coord);
 		var JSONQury = {};
 		var results = [];
 
@@ -128,16 +147,11 @@ function initialiseMap() {
 		};
 		console.log(results);
 
-		var outputRequest = $("#outputSelect :checked").val(); //value for radio button -> write conditional to check what it is and call appropriate ajax funtion
+		var outputRequest = $("#outputSelect :checked").val(); //value for radio button ->  conditional checks what it is and call appropriate ajax funtion (SEE getRaster() and getZonalStats())
 		if (outputRequest == "raster"){
 			getRaster(results);;
 		} else if (outputRequest == "zonalStats") {
-			//getZonalStats(results);
-			resultTestArray = result_test.output.split(',');
-			resultTestArray.unshift(1);
-			//alert(resultTestArray);
-			$("#resultsModal").modal();
-			/***************************START HERE TO INCLUDE THE LOGIC FOR THE TABLE********************************/
+			getZonalStats(results);
 		} else {
 			alert('Please select an output type (Raster or Zonal Statistics)');
 		}
@@ -203,9 +217,14 @@ function initialiseMap() {
                         switch (status)
                         {
                             case 1:
-								console.log('GOOD');
-								alert(json.output);
-								console.log(json.output);
+								resultArray = json.output.split(',');
+								resultArray.unshift(1);
+								//MAKE TABLE TO BE SHOWN IN MODAL
+								$("#resultsModal").modal();
+								$("#mean").text(parseFloat(resultArray[6]).toFixed(4));
+								$("#min").text(resultArray[7]);
+								$("#max").text(resultArray[8]);
+								$("#sum").text(resultArray[9]);								
                                 break;
                             case 2:
                                 console.log('There was an error.1');
@@ -236,9 +255,14 @@ function initialiseMap() {
 
 		$(document).ajaxStop(function() {
 			$("#wait").css("display", "none");
-			$("#interfac :input").attr("disabled", false);
+			$("#interface :input").attr("disabled", false);
 		});
 	});
+
+	//function to show instructions
+	$("#showInstructions").click(function() {
+		$("#instructionsModal").modal();
+	})
 
 }
 

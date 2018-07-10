@@ -150,6 +150,45 @@
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 						<h3>Zonal Statistics</h3>
 						<!-- **************************START HERE TO INCLUDE THE TABLE******************************* -->
+						<table style="width:80%">
+							<tr>
+								<th>Mean</th>
+								<th>Min</th>
+								<th>Max</th>
+								<th>Sum</th>
+							</tr>
+							<tr>
+								<td id="mean"></td>
+								<td id="min"></td>
+								<td id="max"></td>
+								<td id="sum"></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div id="areaError" class="modal">
+					<div class="modal-content">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<div id="areaErrorMessage"></div>
+					</div>
+				</div>
+				<div id="instructionsModal" class="modal">
+					<div id="instructionsModalContent" class="modal-content">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<div id="instructionsDiv">
+							<h3>Instructions</h3>
+							<p>This application will allow you to carry out zonal statistics, or to download rasters for certain covariates.<br>For this proof of concept, it is limited to small areas and covariates, but in time will have all covariates as well as population density rasters</p>
+							<ul>
+								<li>Choose a data-source (Covariate or Population density</li>
+								<li><b>DOWNLOAD COVARIATE</b><ol><li>Select covariate</li><li>Select year</li></ol></li>
+								<li><b>DOWNLOAD POPULATION DENSITY</b><ol><li>Select sex and age group</li><li>Select year</li></ol></li>
+								<li>Click draw shape tab to draw shape from dropdown menu OR click upload file to add ESRI Shapefile or .geojson file (CURRENTLY UNAVAILABLE)</li>
+								<li>Click clear to remove shape</li>
+								<b>Note: This application will only analyse the most recently added shape</b>
+								<li>Choose to download raster OR zonal statistics</li>
+								<li>Submit data for processing</li>
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>								

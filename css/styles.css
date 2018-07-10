@@ -98,4 +98,14 @@ html, body{
     text-decoration: none;
     cursor: pointer;
 }
+
+table, th, td{
+    border: 1px solid black;
+    text-align: center;
+    margin: auto;
+}
 /*Results modal*/
+
+#instructionsModalContent {
+    width: 50%;
+}
