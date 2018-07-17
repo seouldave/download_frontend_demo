@@ -1,7 +1,7 @@
 
 html, body{
 	width: 100%;
-	position: relative;
+    position: fixed;
 	background-color: white;
 	padding: 0;
 	margin: 0;
