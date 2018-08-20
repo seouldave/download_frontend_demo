@@ -132,14 +132,14 @@ function initialiseMap() {
 					freehand: true
 				});
 				map.addInteraction(draw);
-			//////////////////////
+			//Convert circle into geojson polygon
 			} else if (value == 'Circle') {
 				draw = new ol.interaction.Draw({
-					type: 'Circle',
 					source: source,
+					type: value,
 					geometryFunction: function(coordinates, geometry) {
 						if (!geometry) {
-							geometry = new old.geom.Polygon(null);
+							geometry = new ol.geom.Polygon(null);
 						}
 						var center = coordinates[0];
 						var last = coordinates[1];
@@ -152,6 +152,7 @@ function initialiseMap() {
 						return geometry;
 					}
 				})
+				map.addInteraction(draw);
 			} else { //Drawing will not be freehand ie Polygon or Circle
 			draw = new ol.interaction.Draw({
 				source: source,
@@ -180,13 +181,7 @@ function initialiseMap() {
 	//Click submit button and send coords to server.
 	$("#submit").on('click', function() {
 		////////////////////////////////////Get vector source in Geojson
-		var writer = new ol.format.GeoJSON();
-		var geojsonStr = writer.writeFeatures(vector.getSource().getFeatures());
-		alert(geojsonStr);
-
-		///////////////////////////////////
-
-		
+		var features = vector.getSource().getFeatures();
 		
 		if (features.length == 0) {
 			//alert("Please draw your area of interest");
@@ -202,15 +197,22 @@ function initialiseMap() {
 		} else {
 			var feature = features[0]
 		};
+		//Limit the size of the input area ----> Currently at 10km^2. This needs to be increased.
 		if (feature.getGeometry().getArea() >= 100000000) {
 			area = feature.getGeometry().getArea();
-			//alert('Sorry, your polygon\'s area is too large. Your polygon is ' + area/1000 + '. Please draw a polygon 10 or less.');
 			$("#areaError").modal();
 			$("#areaErrorMessage").html("<p><b>Sorry, your polygon's area is too large. You polygon is " + (Math.round(area/1000000)) + "km<sup>2</sup>. Please draw a polygon 100km<sup>2</sup> or less");
 			return;
 		}
+		//console.log("FEATURES " + features[0].features[0])
+		var writer = new ol.format.GeoJSON();
+		var geojsonStr = writer.writeFeatures(features);
+		var geojson = JSON.parse(geojsonStr);
+		alert(geojson.features[0].geometry.coordinates);
+		console.log(geojson.features[0].geometry.coordinates);
 		console.log(feature.getGeometry().getArea());
 		var coord = feature.getGeometry().getCoordinates();
+		console.log(coord);
 		var JSONQury = {};
 		var results = [];
 
