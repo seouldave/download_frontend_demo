@@ -39,25 +39,76 @@ function initialiseMap() {
 		$("#dataSourceSelect").on("change", function() {
 			var dataSource = $(this).find("option:selected").attr("id");
 			if (dataSource == "covariate_layer") {
+				//enable covariate to select menu
 				$("#covariateSelect").prop('disabled', false);
 				$("#covariateSelect").selectpicker('refresh');
+
+				//keep other menus disabled
 				$("#sexSelect").prop('disabled', true);
 				$("#ageSelect").prop('disabled', true);
+				$("#yearSelect").prop('disabled', true);
+
+				//set default value of menus
 				$("#sexSelect").val('Select sex');
-				$("#ageSelect").val('Select age group')
+				$("#ageSelect").val('Select age group');
+				$("#yearSelect").val('Select year');
+
+				//Refresh menu state based on selections
 				$("#sexSelect").selectpicker('refresh');
 				$("#ageSelect").selectpicker('refresh');
+				$("#yearSelect").selectpicker('refresh');
+
 			} else if (dataSource == "population_density_layer") {
+				//enable covariate to select menu
 				$("#sexSelect").prop('disabled', false);
-				$("#ageSelect").prop('disabled', false);
 				$("#sexSelect").selectpicker('refresh');
-				$("#ageSelect").selectpicker('refresh');
+
+				//keep other menus disabled
 				$("#covariateSelect").prop('disabled', true);
-				$("#covariateSelect").val('Select covariate');
+				$("#ageSelect").prop('disabled', true);
+				$("#yearSelect").prop('disabled', true);
+
+				//set default values for menus
+				$("#covariateSelect").val('Select covariate');				
+				$("#ageSelect").val('Select age group');
+				$("#yearSelect").val('Select year');
+				
+				$("#ageSelect").selectpicker('refresh');
 				$("#covariateSelect").selectpicker('refresh');
+				$("#yearSelect").selectpicker('refresh');
  
 			};
-		});
+		}); //end of #dataSourceSelect menu select logic
+
+		//Function to choose covariate type
+		$("#covariateSelect").on("change", function() {
+			if ($(this).find("option:selected").attr("id") != "no_covariate_selected") {
+				var covariateSelect = $(this).find("option:selected").attr("id"); //set variable for covariate choice
+				$("#yearSelect").prop('disabled', false);
+				$("#yearSelect").selectpicker('refresh');
+
+			}
+			
+		}); //end of #covariateSelect menu select logic
+
+		//Function to choose sex
+		$("#sexSelect").on("change", function() {
+			if ($(this).find("option:selected").attr("id") != "no_sex_chosen") {
+				var sexSelect = $(this).find("option:selected").attr("id");
+				$("#ageSelect").prop('disabled', false);
+				$("#ageSelect").selectpicker('refresh');
+			}
+
+		}) //end of #sexSelect menu select logic
+
+		//Function to choose population age group
+		$("#ageSelect").on("change", function() {
+			if ($(this).find("option:selected").attr("id") != "no_age_selected") {
+				var ageSelect = $(this).find("option:selected").attr("id");				
+				$("#yearSelect").prop('disabled', false);
+				$("#yearSelect").selectpicker('refresh');
+			}
+		}); //end of #ageSelect menu select logic
 	});
 
 	$(document).ready(function() {
@@ -68,11 +119,11 @@ function initialiseMap() {
 
 	var draw;
 	var typeSelect = document.getElementById('type');
+	//var wgs84Sphere = sphere(6378137);
 
 	function addInteraction() {
 		var value = typeSelect.value;
 		console.log(value);
-		/*var value = typeSelect;*/
 		if (value != 'None') {
 			if (value == 'Freehand') {
 				draw = new ol.interaction.Draw({
@@ -81,7 +132,27 @@ function initialiseMap() {
 					freehand: true
 				});
 				map.addInteraction(draw);
-			} else {
+			//////////////////////
+			} else if (value == 'Circle') {
+				draw = new ol.interaction.Draw({
+					type: 'Circle',
+					source: source,
+					geometryFunction: function(coordinates, geometry) {
+						if (!geometry) {
+							geometry = new old.geom.Polygon(null);
+						}
+						var center = coordinates[0];
+						var last = coordinates[1];
+						var dx = center[0] - last[0];
+						var dy = center[1] - last[1];
+						var radius = Math.sqrt(dx * dx + dy * dy);
+						var circle = ol.geom.Polygon.circular(ol.proj.toLonLat(center), radius);
+						circle.transform('EPSG:4326', 'EPSG:3857');
+						geometry.setCoordinates(circle.getCoordinates());
+						return geometry;
+					}
+				})
+			} else { //Drawing will not be freehand ie Polygon or Circle
 			draw = new ol.interaction.Draw({
 				source: source,
 				type: value
@@ -98,12 +169,7 @@ function initialiseMap() {
 
 	addInteraction();
 
-	//TESTING VARIABLE FOR JSON OUTPUT DATA --> DELETE AFTER TESTING
-	//result_test = {"status":1,"message":null,"output":"\"\",\"mean\",\"min\",\"max\",\"sum\"\n\"1\",0.748299319727891,0,11,220\n"}
 
-	/*
-	* Function to remove drawn layer ----------------> make sure this doesn't interfere with vector
-	*/
 	$(document).ready(function() {
 		$("#clearMap").on('click', function() {
 			vector.getSource().clear();
@@ -113,9 +179,19 @@ function initialiseMap() {
 
 	//Click submit button and send coords to server.
 	$("#submit").on('click', function() {
-		var features = vector.getSource().getFeatures();
+		////////////////////////////////////Get vector source in Geojson
+		var writer = new ol.format.GeoJSON();
+		var geojsonStr = writer.writeFeatures(vector.getSource().getFeatures());
+		alert(geojsonStr);
+
+		///////////////////////////////////
+
+		
+		
 		if (features.length == 0) {
-			alert("DRAW a picture");
+			//alert("Please draw your area of interest");
+			$("#noPictureError").modal();
+			$("#noPictureErrorMessage").html("<p><b>Please draw your area of interest on the map.</b></p>")
 			return;
 		}
 		if (features.length > 1) {
@@ -153,7 +229,9 @@ function initialiseMap() {
 		} else if (outputRequest == "zonalStats") {
 			getZonalStats(results);
 		} else {
-			alert('Please select an output type (Raster or Zonal Statistics)');
+			//alert('Please select an output type (Raster or Zonal Statistics)');
+			$("#outputTypeError").modal();
+			$("#outputTypeErrorMessage").html("<p>Please select an output type (Check <b>'Raster' or 'Zonal Statistics'</b> and the bottom of the menu.)</p>");
 		}
 
 	});

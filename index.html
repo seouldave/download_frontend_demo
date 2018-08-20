@@ -85,7 +85,7 @@
 					<br>
 				</div>									
 				<h5>Select year</h5>					  			
-				<select id="yearSelect" class='selectpicker' data-dropup-auto='false' data-width='75%' data-style='btn-secondary'>
+				<select id="yearSelect" class='selectpicker' data-dropup-auto='false' data-width='75%' data-style='btn-secondary' disabled>
 					<option id="no_year_chosen"> Select year</option>
 					<option id="year_2000">2000</option>
 					<option id="year_2001">2001</option>
@@ -166,10 +166,22 @@
 						</table>
 					</div>
 				</div>
+				<div id="noPictureError" class="modal">
+					<div class="modal-content">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<div id="noPictureErrorMessage"></div>
+					</div>
+				</div>
 				<div id="areaError" class="modal">
 					<div class="modal-content">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 						<div id="areaErrorMessage"></div>
+					</div>
+				</div>
+				<div id="outputTypeError" class="modal">
+					<div class="modal-content">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<div id="outputTypeErrorMessage"></div>
 					</div>
 				</div>
 				<div id="instructionsModal" class="modal">
