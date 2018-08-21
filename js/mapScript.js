@@ -198,32 +198,39 @@ function initialiseMap() {
 			var feature = features[0]
 		};
 		//Limit the size of the input area ----> Currently at 10km^2. This needs to be increased.
-		if (feature.getGeometry().getArea() >= 100000000) {
+		if (feature.getGeometry().getArea() >= 10000000000) {
 			area = feature.getGeometry().getArea();
 			$("#areaError").modal();
-			$("#areaErrorMessage").html("<p><b>Sorry, your polygon's area is too large. You polygon is " + (Math.round(area/1000000)) + "km<sup>2</sup>. Please draw a polygon 100km<sup>2</sup> or less");
+			$("#areaErrorMessage").html("<p><b>Sorry, your polygon's area is too large. You polygon is " + (Math.round(area/100000000)) + "km<sup>2</sup>. Please draw a polygon 100km<sup>2</sup> or less");
 			return;
 		}
 		//console.log("FEATURES " + features[0].features[0])
+		//console.log("FEATURE PROJECTION " + ol.proj.getTransform(feature))
 		var writer = new ol.format.GeoJSON();
 		var geojsonStr = writer.writeFeatures(features);
 		var geojson = JSON.parse(geojsonStr);
-		alert(geojson.features[0].geometry.coordinates);
-		console.log(geojson.features[0].geometry.coordinates);
+		alert(geojson.features[0]);
+		console.log(geojson.features[0]);
 		console.log(feature.getGeometry().getArea());
 		var coord = feature.getGeometry().getCoordinates();
-		console.log(coord);
+		console.log("coord" + coord.length);
 		var JSONQury = {};
 		var results = [];
 
 		for (var i = 0; i < coord[0].length - 1; i++) {
 			var c1 = ol.proj.transform(coord[0][i], 'EPSG:3857', 'EPSG:4326');
 
-			results.push({"lon": c1[0],
+			/*results.push({"lon": c1[0],
 						"lat": c1[1]
-					});
+					});*/
+			results.push(c1);
 		};
-		console.log(results);
+		for (var i = 0; i < results.length; i++){
+			//console.log("RESULTS " +results[i]);
+			geojson.features[0].geometry.coordinates[i] = results[i];
+		}
+
+		console.log("GEOJSON COORDS" + geojson.features[0].geometry.coordinates);
 
 		var outputRequest = $("#outputSelect :checked").val(); //value for radio button ->  conditional checks what it is and call appropriate ajax funtion (SEE getRaster() and getZonalStats())
 		if (outputRequest == "raster"){
