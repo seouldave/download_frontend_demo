@@ -8,6 +8,7 @@ html, body{
 	height: 100%;
 	margin-top: 0px;
 	margin-bottom: 0px;
+    color: #7E7E7E;
 }
 
 
@@ -109,5 +110,6 @@ table, th, td{
 #instructionsModalContent {
     width: 50%;
 }
+
 
 

@@ -119,11 +119,9 @@ function initialiseMap() {
 
 	var draw;
 	var typeSelect = document.getElementById('type');
-	//var wgs84Sphere = sphere(6378137);
 
 	function addInteraction() {
 		var value = typeSelect.value;
-		console.log(value);
 		if (value != 'None') {
 			if (value == 'Freehand') {
 				draw = new ol.interaction.Draw({
@@ -184,9 +182,8 @@ function initialiseMap() {
 		var features = vector.getSource().getFeatures();
 		
 		if (features.length == 0) {
-			//alert("Please draw your area of interest");
 			$("#noPictureError").modal();
-			$("#noPictureErrorMessage").html("<p><b>Please draw your area of interest on the map.</b></p>")
+			$("#noPictureErrorMessage").html("<p><strong>Please draw your area of interest on the map.</strong></p>")
 			return;
 		}
 		if (features.length > 1) {
@@ -197,40 +194,31 @@ function initialiseMap() {
 		} else {
 			var feature = features[0]
 		};
-		//Limit the size of the input area ----> Currently at 10km^2. This needs to be increased.
+		//Limit the size of the input area ----> Currently at 100km^2. This needs to be increased.
 		if (feature.getGeometry().getArea() >= 10000000000) {
 			area = feature.getGeometry().getArea();
 			$("#areaError").modal();
-			$("#areaErrorMessage").html("<p><b>Sorry, your polygon's area is too large. You polygon is " + (Math.round(area/100000000)) + "km<sup>2</sup>. Please draw a polygon 100km<sup>2</sup> or less");
+			$("#areaErrorMessage").html("<p><b>Sorry, your polygon's area is too large. Your polygon is " + (Math.round(area/100000000)) + "km<sup>2</sup>. Please draw a polygon 100km<sup>2</sup> or less");
 			return;
 		}
-		//console.log("FEATURES " + features[0].features[0])
-		//console.log("FEATURE PROJECTION " + ol.proj.getTransform(feature))
 		var writer = new ol.format.GeoJSON();
 		var geojsonStr = writer.writeFeatures(features);
 		var geojson = JSON.parse(geojsonStr);
-		alert(geojson.features[0]);
-		console.log(geojson.features[0]);
-		console.log(feature.getGeometry().getArea());
 		var coord = feature.getGeometry().getCoordinates();
-		console.log("coord" + coord.length);
 		var JSONQury = {};
 		var results = [];
 
-		for (var i = 0; i < coord[0].length - 1; i++) {
+		//Transform Transverse mercator coords to WGS84 coords
+		for (var i = 0; i < coord[0].length; i++) {
 			var c1 = ol.proj.transform(coord[0][i], 'EPSG:3857', 'EPSG:4326');
-
-			/*results.push({"lon": c1[0],
-						"lat": c1[1]
-					});*/
 			results.push(c1);
 		};
+
+		//Geojson object's coords couldn't be transformed so coordinates replaced here using above created array
 		for (var i = 0; i < results.length; i++){
-			//console.log("RESULTS " +results[i]);
 			geojson.features[0].geometry.coordinates[i] = results[i];
 		}
 
-		console.log("GEOJSON COORDS" + geojson.features[0].geometry.coordinates);
 
 		var outputRequest = $("#outputSelect :checked").val(); //value for radio button ->  conditional checks what it is and call appropriate ajax funtion (SEE getRaster() and getZonalStats())
 		if (outputRequest == "raster"){
@@ -238,7 +226,6 @@ function initialiseMap() {
 		} else if (outputRequest == "zonalStats") {
 			getZonalStats(results);
 		} else {
-			//alert('Please select an output type (Raster or Zonal Statistics)');
 			$("#outputTypeError").modal();
 			$("#outputTypeErrorMessage").html("<p>Please select an output type (Check <b>'Raster' or 'Zonal Statistics'</b> and the bottom of the menu.)</p>");
 		}
