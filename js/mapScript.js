@@ -17,9 +17,26 @@ function initialiseMap() {
 	var vector = new ol.layer.Vector({
 		source: source,
 		projection: 'EPSG:4326'
-	})
+	});
+///////////////////////////// TEST WMS layers ////////////////////////////////////////
+	var boundaries = new ol.layer.Tile({
+		source: new ol.source.XYZ({
+			//url: 'http://10.19.101.204/geoserver/tiles/900913/L0_Boundaries/{z}/{x}/{-y}.png'
+			url: 'https://cartodb-basemaps-a.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}{r}.png'
+		}),
+		projection: 'EPSG:4326'
 
-	var mapLayers = [OSMTiles, vector];
+	});
+	boundaries.setZIndex(100);
+
+	var test_ppp = new ol.layer.Tile({
+		source: new ol.source.XYZ({
+			url: 'http://10.19.101.204/tiles/900913/ppp_2010/{z}/{x}/{-y}.png'
+		}),
+	});
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+	var mapLayers = [OSMTiles, vector, boundaries, test_ppp];
 
 	var map = new ol.Map({
 		target: 'map',
