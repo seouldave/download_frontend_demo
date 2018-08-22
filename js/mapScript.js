@@ -219,6 +219,19 @@ function initialiseMap() {
 			geojson.features[0].geometry.coordinates[i] = results[i];
 		}
 
+		//Define variables ----->
+		var $items = $("#dataSourceSelect, #covariateSelect, #ageSelect, #sexSelect, #yearSelect");
+		postObj = {} //Json object in which shape and variables will be posted
+		$items.each(function() {
+    			postObj[this.id] = $(this).find("option:selected").attr("id");
+   		});
+   		postObj.geojson = geojson;
+   		console.log(JSON.stringify(postObj));
+   		//////////////////////////////////START HERE 22/08/2018/////////////////////////
+		//Finished defining variables <-------
+		
+
+
 
 		var outputRequest = $("#outputSelect :checked").val(); //value for radio button ->  conditional checks what it is and call appropriate ajax funtion (SEE getRaster() and getZonalStats())
 		if (outputRequest == "raster"){
@@ -232,7 +245,7 @@ function initialiseMap() {
 
 	});
 
-	function getRaster(results) {
+	/*function getRaster(results) {
 		$.ajax({
 			url: "http://10.19.101.223/wpgetdata/openlayer/get_raster.php",
 			type: "post",
@@ -319,7 +332,7 @@ function initialiseMap() {
                 }   
             });
 	};
-
+*/
 
 	$(document).ready(function() {
 		$(document).ajaxStart(function() {
