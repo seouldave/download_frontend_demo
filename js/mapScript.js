@@ -36,7 +36,7 @@ function initialiseMap() {
 	});
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-	var mapLayers = [OSMTiles, vector, boundaries, test_ppp];
+	var mapLayers = [OSMTiles, vector];
 
 	var map = new ol.Map({
 		target: 'map',
@@ -55,7 +55,26 @@ function initialiseMap() {
 	$(document).ready(function() {
 		$("#dataSourceSelect").on("change", function() {
 			var dataSource = $(this).find("option:selected").attr("id");
-			if (dataSource == "covariate_layer") {
+			if (dataSource == "no_type_chosen") {
+				//Disable/refresh all other menus
+				//covarite menu
+				$("#covariateSelect").prop('disabled', true);
+				$("#sexSelect").prop('disabled', true);
+				$("#ageSelect").prop('disabled', true);
+				$("#yearSelect").prop('disabled', true);
+
+				$("#covariateSelect").val('Select covariate');
+				$("#sexSelect").val('Select sex');
+				$("#ageSelect").val('Select age group');
+				$("#yearSelect").val('Select year');
+
+				$("#covariateSelect").selectpicker('refresh');
+				$("#sexSelect").selectpicker('refresh');
+				$("#ageSelect").selectpicker('refresh');
+				$("#yearSelect").selectpicker('refresh');			
+
+
+			} if (dataSource == "covariate_layer") {
 				//enable covariate to select menu
 				$("#covariateSelect").prop('disabled', false);
 				$("#covariateSelect").selectpicker('refresh');
