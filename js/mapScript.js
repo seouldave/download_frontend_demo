@@ -8,15 +8,15 @@ function initialiseMap() {
 	var OSMTiles = new ol.layer.Tile({
 		title: 'Open Street Map',
 		source: new ol.source.OSM(),
-		projection: 'EPSG:4326'
+		projection: 'EPSG:3857'
 	});
 
-	var source = new ol.source.Vector({wrapX: false,projection : 'EPSG:4326'});
+	var source = new ol.source.Vector({wrapX: false,projection : 'EPSG:3857'});
 
 	/*vector layer to hold added shape*/
 	var vector = new ol.layer.Vector({
 		source: source,
-		projection: 'EPSG:4326'
+		projection: 'EPSG:3857'
 	});
 ///////////////////////////// TEST WMS layers ////////////////////////////////////////
 	var boundaries = new ol.layer.Tile({
@@ -24,7 +24,7 @@ function initialiseMap() {
 			//url: 'http://10.19.101.204/geoserver/tiles/900913/L0_Boundaries/{z}/{x}/{-y}.png'
 			url: 'https://cartodb-basemaps-a.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}{r}.png'
 		}),
-		projection: 'EPSG:4326'
+		projection: 'EPSG:3857'
 
 	});
 	boundaries.setZIndex(100);
@@ -40,7 +40,6 @@ function initialiseMap() {
 
 	var map = new ol.Map({
 		target: 'map',
-		projection: 'EPSG:4326',
 		layers: mapLayers,
 		view: new ol.View({
 			center: [841240, 283949],
@@ -71,7 +70,9 @@ function initialiseMap() {
 				$("#covariateSelect").selectpicker('refresh');
 				$("#sexSelect").selectpicker('refresh');
 				$("#ageSelect").selectpicker('refresh');
-				$("#yearSelect").selectpicker('refresh');			
+				$("#yearSelect").selectpicker('refresh');
+
+				
 
 
 			} if (dataSource == "covariate_layer") {
@@ -118,11 +119,15 @@ function initialiseMap() {
 
 		//Function to choose covariate type
 		$("#covariateSelect").on("change", function() {
-			if ($(this).find("option:selected").attr("id") != "no_covariate_selected") {
+			if ($(this).find("option:selected").attr("id") != "no_covariate_chosen") {
 				var covariateSelect = $(this).find("option:selected").attr("id"); //set variable for covariate choice
 				$("#yearSelect").prop('disabled', false);
 				$("#yearSelect").selectpicker('refresh');
 
+			} else {
+				$("#choiceMissingError").modal();
+				$("#choiceMissingErrorMessage").html("<p><strong>Please select a covariate.</strong></p>");
+				
 			}
 			
 		}); //end of #covariateSelect menu select logic
@@ -133,6 +138,10 @@ function initialiseMap() {
 				var sexSelect = $(this).find("option:selected").attr("id");
 				$("#ageSelect").prop('disabled', false);
 				$("#ageSelect").selectpicker('refresh');
+			} else {
+				$("#choiceMissingError").modal();
+				$("#choiceMissingErrorMessage").html("<p><strong>Please select a sex.</strong></p>");
+				
 			}
 
 		}) //end of #sexSelect menu select logic
@@ -143,9 +152,71 @@ function initialiseMap() {
 				var ageSelect = $(this).find("option:selected").attr("id");				
 				$("#yearSelect").prop('disabled', false);
 				$("#yearSelect").selectpicker('refresh');
+			} else {
+				$("#choiceMissingError").modal();
+				$("#choiceMissingErrorMessage").html("<p><strong>Please select an age.</strong></p>");
+				
 			}
 		}); //end of #ageSelect menu select logic
+
+		//funtion to request WMS when year chosen
+		$("#yearSelect").on("change", function(){
+			if ($(this).find('option:selected').attr('id') != "no_year_chosen") {
+				console.log('Write a function to call the WMS');
+				loadRasterLayer();
+				listenForSelectionChanges();
+			} else {
+				$("#choiceMissingError").modal();
+				$("#choiceMissingErrorMessage").html("<p><strong>Please select a year.</strong></p>");
+				
+			}
+		})
 	});
+
+	//////////////////////////////////////CAN THIS BE IMPROVED??????????????????////////////////////////////////////////////
+	//////////////////////////////////////CAN THIS BE IMPROVED??????????????????////////////////////////////////////////////
+	//////////////////////////////////////CAN THIS BE IMPROVED??????????????????////////////////////////////////////////////
+	//////////////////////////////////////CAN THIS BE IMPROVED??????????????????////////////////////////////////////////////
+	//Function to call raster from geoserver
+	function loadRasterLayer(){
+		/////////// !!!!!!!!!!!!!!!!!!!!!!THIS FUNCTION NEEDS TO DEAL WITH DATA TYPE CHANGING IN THE MIDDLE OF SELECTIONS. iF THIS ISN'T DEALT WITH THEN THE LISTENFORsELECTIONCHANGES
+		/////////// !!!!!!!!!!!!!!!!!!!!! IS STILL LISTENING.
+		var data = $("#dataSourceSelect").find("option:selected").attr("id");
+		var covariate = $("#covariateSelect").find("option:selected").attr("id");
+		var sex = $("#sexSelect").find("option:selected").attr("id");
+		var age = $("#ageSelect").find("option:selected").attr("id");
+		var year = $("#yearSelect").find("option:selected").attr("id");
+
+		if (data == "covariate_layer") {
+			if (data != "no_type_chosen" & covariate != "no_covariate_chosen" & year != "no_year_chosen") {
+				console.log(covariate + year )
+			} else {
+				$("#selectionMissingError").modal();
+				$("#selectionMissingErrorMessage").html("<p><strong>Please check your selections - one or more selection(s) are missing.");
+			}
+		} else if (data == "population_density_layer") {
+			if (data != "no_type_chosen" & sex != "no_sex_chosen" & age != "no_age_selected" & year != "no_year_chosen") {
+				console.log(sex + " " + age + " " + year);
+			} else {
+				$("#selectionMissingError").modal();
+				$("#selectionMissingErrorMessage").html("<p><strong>Please check your selections - one or more selection(s) are missing.");
+			}
+		}
+	};
+
+	function listenForSelectionChanges() {
+		$(document).ready(function() {
+			if ($("#covariateSelect").on("change", loadRasterLayer) | $("#ageSelect").on("change", loadRasterLayer) | $("#sexSelect").on("change", loadRasterLayer) | $("#yearSelect").on("change", loadRasterLayer)) {
+
+			} 
+		});
+	}
+	//////////////////////////////////////CAN THIS BE IMPROVED??????????????????////////////////////////////////////////////
+	//////////////////////////////////////CAN THIS BE IMPROVED??????????????????////////////////////////////////////////////
+	//////////////////////////////////////CAN THIS BE IMPROVED??????????????????////////////////////////////////////////////
+	//////////////////////////////////////CAN THIS BE IMPROVED??????????????????////////////////////////////////////////////
+
+
 
 	$(document).ready(function() {
 		$(".nav-tabs a").click(function() {
