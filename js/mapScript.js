@@ -83,17 +83,17 @@ function initialiseMap() {
 				//keep other menus disabled
 				$("#sexSelect").prop('disabled', true);
 				$("#ageSelect").prop('disabled', true);
-				$("#yearSelect").prop('disabled', true);
+				//$("#yearSelect").prop('disabled', true);
 
 				//set default value of menus
 				$("#sexSelect").val('Select sex');
 				$("#ageSelect").val('Select age group');
-				$("#yearSelect").val('Select year');
+				//$("#yearSelect").val('Select year');
 
 				//Refresh menu state based on selections
 				$("#sexSelect").selectpicker('refresh');
 				$("#ageSelect").selectpicker('refresh');
-				$("#yearSelect").selectpicker('refresh');
+				//$("#yearSelect").selectpicker('refresh');
 
 			} else if (dataSource == "population_density_layer") {
 				//enable covariate to select menu
@@ -103,16 +103,16 @@ function initialiseMap() {
 				//keep other menus disabled
 				$("#covariateSelect").prop('disabled', true);
 				$("#ageSelect").prop('disabled', true);
-				$("#yearSelect").prop('disabled', true);
+				//$("#yearSelect").prop('disabled', true);
 
 				//set default values for menus
 				$("#covariateSelect").val('Select covariate');				
 				$("#ageSelect").val('Select age group');
-				$("#yearSelect").val('Select year');
+				//$("#yearSelect").val('Select year');
 				
 				$("#ageSelect").selectpicker('refresh');
 				$("#covariateSelect").selectpicker('refresh');
-				$("#yearSelect").selectpicker('refresh');
+				//$("#yearSelect").selectpicker('refresh');
  
 			};
 		}); //end of #dataSourceSelect menu select logic
@@ -190,17 +190,17 @@ function initialiseMap() {
 		if (data == "covariate_layer") {
 			if (data != "no_type_chosen" & covariate != "no_covariate_chosen" & year != "no_year_chosen") {
 				console.log(covariate + year )
-			} else {
+			} /*else {
 				$("#selectionMissingError").modal();
 				$("#selectionMissingErrorMessage").html("<p><strong>Please check your selections - one or more selection(s) are missing.");
-			}
+			}*/
 		} else if (data == "population_density_layer") {
 			if (data != "no_type_chosen" & sex != "no_sex_chosen" & age != "no_age_selected" & year != "no_year_chosen") {
 				console.log(sex + " " + age + " " + year);
-			} else {
+			} /*else {
 				$("#selectionMissingError").modal();
 				$("#selectionMissingErrorMessage").html("<p><strong>Please check your selections - one or more selection(s) are missing.");
-			}
+			}*/
 		}
 	};
 
