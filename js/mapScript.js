@@ -21,22 +21,19 @@ function initialiseMap() {
 ///////////////////////////// TEST WMS layers ////////////////////////////////////////
 	var boundaries = new ol.layer.Tile({
 		source: new ol.source.XYZ({
-			//url: 'http://10.19.101.204/geoserver/tiles/900913/L0_Boundaries/{z}/{x}/{-y}.png'
-			url: 'https://cartodb-basemaps-a.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}{r}.png'
+			url: 'http://10.19.101.204/tiles/900913/L0/{z}/{x}/{-y}.png'
+			//url: 'https://cartodb-basemaps-a.global.ssl.fastly.net/light_only_labels/{z}/{x}/{y}{r}.png'
 		}),
-		projection: 'EPSG:3857'
+		//projection: 'EPSG:3857'
 
 	});
 	boundaries.setZIndex(100);
 
-	var test_ppp = new ol.layer.Tile({
-		source: new ol.source.XYZ({
-			url: 'http://10.19.101.204/tiles/900913/ppp_2010/{z}/{x}/{-y}.png'
-		}),
-	});
+	var ppp;
+	var covariate;
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-	var mapLayers = [OSMTiles, vector];
+	var mapLayers = [OSMTiles, vector, boundaries];
 
 	var map = new ol.Map({
 		target: 'map',
@@ -44,7 +41,8 @@ function initialiseMap() {
 		view: new ol.View({
 			center: [841240, 283949],
 			zoom: 3,
-			minZoom: 2
+			minZoom: 2,
+			maxZoom: 11
 		})
 	});
 
@@ -190,6 +188,16 @@ function initialiseMap() {
 		if (data == "covariate_layer") {
 			if (data != "no_type_chosen" & covariate != "no_covariate_chosen" & year != "no_year_chosen") {
 				console.log(covariate + year )
+				var url = 'http://10.19.101.204/tiles/900913/' + covariate + '_' + year + '/{z}/{x}/{-y}.png';
+				if (covariate) {
+					map.removeLayer(covariate);
+				};
+				covariate = new ol.layer.Tile({
+					source: new ol.source.XYZ({
+						url: url
+					}),
+				});
+				map.addLayer(covariate);
 			} /*else {
 				$("#selectionMissingError").modal();
 				$("#selectionMissingErrorMessage").html("<p><strong>Please check your selections - one or more selection(s) are missing.");
@@ -197,6 +205,20 @@ function initialiseMap() {
 		} else if (data == "population_density_layer") {
 			if (data != "no_type_chosen" & sex != "no_sex_chosen" & age != "no_age_selected" & year != "no_year_chosen") {
 				console.log(sex + " " + age + " " + year);
+				if (sex == "both_sexes" & age == "all_ages") {
+					var url = 'http://10.19.101.204/tiles/900913/ppp_' + year + '/{z}/{x}/{-y}.png';
+				} else {
+					var url = 'http://10.19.101.204/tiles/900913/ppp_' + sex + '_' + age + '_' + year + '/{z}/{x}/{-y}.png';
+				};				
+				if (ppp){
+					map.removeLayer(ppp)
+				};
+				ppp = new ol.layer.Tile({
+					source: new ol.source.XYZ({
+						url: url
+					}),
+				});
+				map.addLayer(ppp);
 			} /*else {
 				$("#selectionMissingError").modal();
 				$("#selectionMissingErrorMessage").html("<p><strong>Please check your selections - one or more selection(s) are missing.");
@@ -215,8 +237,18 @@ function initialiseMap() {
 	//////////////////////////////////////CAN THIS BE IMPROVED??????????????????////////////////////////////////////////////
 	//////////////////////////////////////CAN THIS BE IMPROVED??????????????????////////////////////////////////////////////
 	//////////////////////////////////////CAN THIS BE IMPROVED??????????????????////////////////////////////////////////////
-
-
+	var boundaries_added = true;
+	$(document).ready(function () {
+		$("#switchBoundaries").on('change', function() {
+			if (boundaries_added == true){
+				map.removeLayer(boundaries);
+				boundaries_added = false;
+			} else {
+				map.addLayer(boundaries);
+				boundaries_added = true;
+			}
+		})
+	})
 
 	$(document).ready(function() {
 		$(".nav-tabs a").click(function() {
